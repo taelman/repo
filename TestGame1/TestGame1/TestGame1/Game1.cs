@@ -93,7 +93,7 @@ namespace TestGame1
 
             spriteBatch.Begin();
             spriteBatch.Draw(texture, GraphicsDevice.Viewport.Bounds, Color.White);
-            spriteBatch.Draw(texture2, new Vector2(0, 0), null, Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture2, new Vector2(10, 10), null, Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(texture3, new Vector2(100 + frame2, 200), new Rectangle(frame*96, 0, 96, 96), Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.FlipHorizontally, 1.0f);
             spriteBatch.End();
 
