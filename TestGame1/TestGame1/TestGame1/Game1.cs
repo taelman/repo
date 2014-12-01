@@ -18,11 +18,11 @@ namespace TestGame1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D texture;
+        //Texture2D texture;
         //Texture2D texture2;
         //Texture2D texture3;
-        Texture2D alphaTexture;
-        SpriteFont font;
+        //Texture2D alphaTexture;
+        //SpriteFont font;
 
         public Game1()
         {
@@ -38,7 +38,8 @@ namespace TestGame1
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+
+            Components.Add(new BouncingImage(this));
 
             base.Initialize();
         }
@@ -52,13 +53,14 @@ namespace TestGame1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
+
             //texture = Content.Load<Texture2D>("glacier");
             //texture2 = Content.Load<Texture2D>("cat");
             //texture3 = Content.Load<Texture2D>("spriteanimation");
-            texture = Content.Load<Texture2D>("layers");
-            alphaTexture = Content.Load<Texture2D>("AlphaSprite");
-            font = Content.Load<SpriteFont>("SpriteFont1");
-
+            //texture = Content.Load<Texture2D>("layers");
+            //alphaTexture = Content.Load<Texture2D>("AlphaSprite");
+            //font = Content.Load<SpriteFont>("SpriteFont1");
         }
 
         /// <summary>
@@ -81,8 +83,6 @@ namespace TestGame1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -94,13 +94,14 @@ namespace TestGame1
         {
             GraphicsDevice.Clear(Color.White);
             
-            int frame = (int)(gameTime.TotalGameTime.TotalSeconds * 20) % 10;
-            int frame2 = (int)(gameTime.TotalGameTime.TotalSeconds * 100);
+            //int frame = (int)(gameTime.TotalGameTime.TotalSeconds * 20) % 10;
+            //int frame2 = (int)(gameTime.TotalGameTime.TotalSeconds * 100);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(texture, Vector2.Zero, Color.White);
-            spriteBatch.Draw(alphaTexture, Vector2.Zero, Color.White);
-            spriteBatch.DrawString(font, "Hello World", new Vector2(300, 100), Color.Red);
+            //spriteBatch.Begin();
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            //spriteBatch.Draw(texture, Vector2.Zero, Color.White);
+            //spriteBatch.Draw(alphaTexture, Vector2.Zero, Color.White);
+            //spriteBatch.DrawString(font, "Hello World", new Vector2(300, 100), Color.Red);
             //spriteBatch.Begin(SpriteSortMode.FrontToBack, null);
             //spriteBatch.Draw(texture, GraphicsDevice.Viewport.Bounds, Color.White);
             //spriteBatch.Draw(texture2, new Vector2(0, 0), null, Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
@@ -110,7 +111,7 @@ namespace TestGame1
             //    Rectangle src = new Rectangle((i % 2) * (texture.Width/2), (i<2) ? 0 : (texture.Height / 2), texture.Width/2, texture.Height/2);
             //    spriteBatch.Draw(texture, new Vector2(50 + (50 * i), 50 + (50 * i)), src, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, i * 0.1f);
             //}
-            spriteBatch.End();
+            //spriteBatch.End();
             base.Draw(gameTime);
         }
     }
