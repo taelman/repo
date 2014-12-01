@@ -19,6 +19,8 @@ namespace TestGame1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D texture;
+        Texture2D texture2;
+        Texture2D texture3;
 
         public Game1()
         {
@@ -49,6 +51,8 @@ namespace TestGame1
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             texture = Content.Load<Texture2D>("glacier");
+            texture2 = Content.Load<Texture2D>("cat");
+            texture3 = Content.Load<Texture2D>("spriteanimation");
         }
 
         /// <summary>
@@ -82,10 +86,15 @@ namespace TestGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
+            
+            int frame = (int)(gameTime.TotalGameTime.TotalSeconds * 20) % 10;
+            int frame2 = (int)(gameTime.TotalGameTime.TotalSeconds * 100);
 
             spriteBatch.Begin();
             spriteBatch.Draw(texture, GraphicsDevice.Viewport.Bounds, Color.White);
+            spriteBatch.Draw(texture2, new Vector2(0, 0), null, Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture3, new Vector2(100 + frame2, 200), new Rectangle(frame*96, 0, 96, 96), Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.FlipHorizontally, 1.0f);
             spriteBatch.End();
 
             base.Draw(gameTime);
