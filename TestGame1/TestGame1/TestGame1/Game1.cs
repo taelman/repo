@@ -19,8 +19,10 @@ namespace TestGame1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D texture;
-        Texture2D texture2;
-        Texture2D texture3;
+        //Texture2D texture2;
+        //Texture2D texture3;
+        Texture2D alphaTexture;
+        SpriteFont font;
 
         public Game1()
         {
@@ -50,9 +52,13 @@ namespace TestGame1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            texture = Content.Load<Texture2D>("glacier");
-            texture2 = Content.Load<Texture2D>("cat");
-            texture3 = Content.Load<Texture2D>("spriteanimation");
+            //texture = Content.Load<Texture2D>("glacier");
+            //texture2 = Content.Load<Texture2D>("cat");
+            //texture3 = Content.Load<Texture2D>("spriteanimation");
+            texture = Content.Load<Texture2D>("layers");
+            alphaTexture = Content.Load<Texture2D>("AlphaSprite");
+            font = Content.Load<SpriteFont>("SpriteFont1");
+
         }
 
         /// <summary>
@@ -91,12 +97,20 @@ namespace TestGame1
             int frame = (int)(gameTime.TotalGameTime.TotalSeconds * 20) % 10;
             int frame2 = (int)(gameTime.TotalGameTime.TotalSeconds * 100);
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(texture, GraphicsDevice.Viewport.Bounds, Color.White);
-            spriteBatch.Draw(texture2, new Vector2(0, 0), null, Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
-            spriteBatch.Draw(texture3, new Vector2(100 + frame2, 200), new Rectangle(frame*96, 0, 96, 96), Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.FlipHorizontally, 1.0f);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            spriteBatch.Draw(texture, Vector2.Zero, Color.White);
+            spriteBatch.Draw(alphaTexture, Vector2.Zero, Color.White);
+            spriteBatch.DrawString(font, "Hello World", new Vector2(300, 100), Color.Red);
+            //spriteBatch.Begin(SpriteSortMode.FrontToBack, null);
+            //spriteBatch.Draw(texture, GraphicsDevice.Viewport.Bounds, Color.White);
+            //spriteBatch.Draw(texture2, new Vector2(0, 0), null, Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
+            //spriteBatch.Draw(texture3, new Vector2(100 + frame2, 200), new Rectangle(frame*96, 0, 96, 96), Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.FlipHorizontally, 1.0f);
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    Rectangle src = new Rectangle((i % 2) * (texture.Width/2), (i<2) ? 0 : (texture.Height / 2), texture.Width/2, texture.Height/2);
+            //    spriteBatch.Draw(texture, new Vector2(50 + (50 * i), 50 + (50 * i)), src, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, i * 0.1f);
+            //}
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
