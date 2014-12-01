@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGame2", "TestGame2\TestGame2\TestGame2.csproj", "{B082EDBA-E61D-4EC5-8E2E-EA266D3A8341}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TestGame2Content", "TestGame2\TestGame2Content\TestGame2Content.contentproj", "{CCCCF6AF-652C-4C60-A307-A53DFE4DD763}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B082EDBA-E61D-4EC5-8E2E-EA266D3A8341}.Debug|x86.ActiveCfg = Debug|x86
+		{B082EDBA-E61D-4EC5-8E2E-EA266D3A8341}.Debug|x86.Build.0 = Debug|x86
+		{B082EDBA-E61D-4EC5-8E2E-EA266D3A8341}.Release|x86.ActiveCfg = Release|x86
+		{B082EDBA-E61D-4EC5-8E2E-EA266D3A8341}.Release|x86.Build.0 = Release|x86
+		{CCCCF6AF-652C-4C60-A307-A53DFE4DD763}.Debug|x86.ActiveCfg = Debug|x86
+		{CCCCF6AF-652C-4C60-A307-A53DFE4DD763}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
