@@ -102,7 +102,7 @@ namespace TestGame3
             view = Matrix.CreateLookAt(cameraPosition, cameraLookAt, up);
 
             //create projection using viewing angle, aspect ratio, and closest and farthest view point
-            proj = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4 / zoom, Game.GraphicsDevice.Viewport.AspectRatio, 0.1f, 100.0f * zoom);
+            proj = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4 / zoom, Game.GraphicsDevice.Viewport.AspectRatio, 0.1f, 1000.0f * zoom);
         }
 
         /// <summary>

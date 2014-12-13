@@ -26,6 +26,12 @@ namespace TestGame3
         Model model;
         CameraComponent camera;
 
+
+        protected VertexBuffer vertexBuffer;
+        protected BasicEffect chunkEffect;
+
+        bool updateChunk;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -44,10 +50,13 @@ namespace TestGame3
         {
             fpsFont = Content.Load<SpriteFont>("font1");
 
-            model = Content.Load<Model>("box");
+            model = Content.Load<Model>("cube");
+
             (model.Meshes[0].Effects[0] as BasicEffect).EnableDefaultLighting();
 
             Components.Add(camera = new CameraComponent(this));//register camera as gamecomponent
+
+            updateChunk = true;
 
             base.Initialize();
         }
@@ -102,16 +111,62 @@ namespace TestGame3
             GraphicsDevice.Clear(Color.CornflowerBlue);
             graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            for (float x = -50; x <= 50; x += 1.1f)
+            int count = 0;
+
+            /*Vector3 pos = new Vector3(0, 0, 0);
+            if (updateChunk)
             {
-                for (float z = -50; z <= 50; z += 1.1f)
+                chunkEffect = new BasicEffect(GraphicsDevice);
+                chunkEffect.EnableDefaultLighting();
+                chunkEffect.World = Matrix.CreateTranslation(pos);
+                chunkEffect.View = camera.View;
+                chunkEffect.Projection = camera.Proj;
+                chunkEffect.VertexColorEnabled = true;
+
+                VertexPositionColor[] vertexData = new VertexPositionColor[8000000];
+
+                int vertexOffset = 0;
+
+                model.Meshes[0].MeshParts[0].VertexBuffer.;
+
+                vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), )
+            }*/
+
+            for (float x = -100; x <= 100; x += 2.1f)
+            {
+                for (float z = -100; z <= 100; z += 2.1f)
                 {
                     Vector3 pos = new Vector3(x, 0, z);
-                    //model.Draw(Matrix.Multiply(Matrix.CreateRotationZ(MathHelper.ToRadians(45)),Matrix.CreateTranslation(pos)), view, proj);
-                    model.Draw(Matrix.CreateTranslation(pos), camera.View, camera.Proj);
+
+                    BoundingFrustum boundingFrustum = new BoundingFrustum(camera.View * camera.Proj);
+
+                    // Draw the model. A model can have multiple meshes, so loop.
+                    foreach (ModelMesh mesh in model.Meshes)
+                    {
+                        if (boundingFrustum.Contains(mesh.BoundingSphere.Transform(Matrix.CreateTranslation(pos))) != ContainmentType.Disjoint)
+                        {
+                            // This is where the mesh orientation is set, as well as our camera and
+                            // projection.
+                            foreach (BasicEffect effect in mesh.Effects)
+                            {
+                                effect.EnableDefaultLighting();
+                                effect.World = Matrix.CreateTranslation(pos);
+                                effect.View = camera.View;
+                                effect.Projection = camera.Proj;
+                            }
+
+                            // Draw the mesh, using the effects set above.
+                            mesh.Draw();
+
+                            foreach(ModelMeshPart meshPart in mesh.MeshParts)
+                            {
+                                count += meshPart.PrimitiveCount;
+                            }
+                        }
+                    }
                 }
             }
-
+            Console.WriteLine(count);
 
             //display FPS
             spriteBatch.Begin();
