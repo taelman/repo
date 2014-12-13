@@ -29,6 +29,8 @@ namespace TestGame3
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
+
             Content.RootDirectory = "Content";
         }
 
@@ -98,10 +100,11 @@ namespace TestGame3
             }
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            for (float x = -10; x <= 10; x += 1.5f)
+            for (float x = -50; x <= 50; x += 1.1f)
             {
-                for (float z = -10; z <= 10; z += 1.5f)
+                for (float z = -50; z <= 50; z += 1.1f)
                 {
                     Vector3 pos = new Vector3(x, 0, z);
                     //model.Draw(Matrix.Multiply(Matrix.CreateRotationZ(MathHelper.ToRadians(45)),Matrix.CreateTranslation(pos)), view, proj);
