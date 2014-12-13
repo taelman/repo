@@ -16,6 +16,11 @@ namespace TestGame3
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        float elapseTime;
+        int frameCounter;
+        float FPS;
+        SpriteFont fpsFont;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Model model;
@@ -35,10 +40,12 @@ namespace TestGame3
         /// </summary>
         protected override void Initialize()
         {
+            fpsFont = Content.Load<SpriteFont>("font1");
+
             model = Content.Load<Model>("box");
             (model.Meshes[0].Effects[0] as BasicEffect).EnableDefaultLighting();
 
-            Components.Add(camera = new CameraComponent(this));
+            Components.Add(camera = new CameraComponent(this));//register camera as gamecomponent
 
             base.Initialize();
         }
@@ -71,9 +78,6 @@ namespace TestGame3
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -83,21 +87,33 @@ namespace TestGame3
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            //calculate framerate
+            elapseTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            frameCounter++;
+            if (elapseTime > 1)
+            {
+                FPS = frameCounter;
+                frameCounter = 0;
+                elapseTime = 0;
+            }
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            const int numberBoxes = 3;
-            const int radiusMultiple = numberBoxes + 1;
-            float radius = model.Meshes[0].BoundingSphere.Radius;
-            Matrix view = Matrix.CreateLookAt(new Vector3(0, radius*radiusMultiple, radius*(radiusMultiple*radiusMultiple)),new Vector3((numberBoxes / 2) * (radius * radiusMultiple) - 1,(numberBoxes / 2) * (radius * radiusMultiple) - 1, 0),Vector3.Up);
-            Matrix proj = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1.0f, 100.0f);
-            for(int x = 0; x < numberBoxes; x++){
-                for (int y = 0; y < numberBoxes; y++)
+            for (float x = -10; x <= 10; x += 1.5f)
+            {
+                for (float z = -10; z <= 10; z += 1.5f)
                 {
-                    Vector3 pos = new Vector3((y * (radius * radiusMultiple)) - 1, (x * (radius * radiusMultiple)) - 1, -(y + x));
+                    Vector3 pos = new Vector3(x, 0, z);
                     //model.Draw(Matrix.Multiply(Matrix.CreateRotationZ(MathHelper.ToRadians(45)),Matrix.CreateTranslation(pos)), view, proj);
                     model.Draw(Matrix.CreateTranslation(pos), camera.View, camera.Proj);
                 }
             }
+
+
+            //display FPS
+            spriteBatch.Begin();
+            spriteBatch.DrawString(fpsFont, "FPS:" + FPS, Vector2.Zero, Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

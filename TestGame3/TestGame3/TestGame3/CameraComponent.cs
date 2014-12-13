@@ -25,6 +25,7 @@ namespace TestGame3
         public Vector3 up;//this side up
         public float rotX;//degrees of rotation camera
         public float rotY;//degrees of rotation camera
+        public float zoom;//times zoom (1 is no zoom)
 
         //keyboard properties for this camera
         public float keyboardTranslationSensitivity;
@@ -34,6 +35,9 @@ namespace TestGame3
         public float mouseHorizontalSensitivity;
         public float mouseVerticalSensitivity;
         public Boolean mouseVerticalReversed;
+        public float mouseMinZoom;
+        public float mouseMaxZoom;
+        public float mouseScrollSensitivity;
 
         //other properties
         public float maxVerticalRotation;//in degrees, same for up as for down
@@ -61,13 +65,20 @@ namespace TestGame3
         /// </summary>
         public override void Initialize()
         {
-            cameraPosition = new Vector3(0, 0, -16);
+            //startingconditions camera
+            cameraPosition = new Vector3(0, 2, -16);
             cameraDirection = new Vector3(0, 0, 1);//start by staring to the origin on -16 on the Z axis
             up = Vector3.Up;//up is up
             rotX = 0;//zero horizontal startrotation
             rotY = 0;//zero vertical startrotation
+            //sensitivity settings for mouse
             mouseHorizontalSensitivity = 0.5f;
             mouseVerticalSensitivity = 0.5f;
+            mouseScrollSensitivity = 0.5f;
+            mouseMinZoom = 1.0f;
+            mouseMaxZoom = 10.0f;
+            zoom = 1.0f;
+            //sensitivity settings for keyboard
             keyboardTranslationSensitivity = 0.5f;
             keyboardRotationSensitivity = 0.5f;
             previousMouseState = Mouse.GetState();
@@ -91,7 +102,7 @@ namespace TestGame3
             view = Matrix.CreateLookAt(cameraPosition, cameraLookAt, up);
 
             //create projection using viewing angle, aspect ratio, and closest and farthest view point
-            proj = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, Game.GraphicsDevice.Viewport.AspectRatio, 1.0f, 100.0f);
+            proj = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4 / zoom, Game.GraphicsDevice.Viewport.AspectRatio, 0.1f, 100.0f * zoom);
         }
 
         /// <summary>
@@ -181,11 +192,16 @@ namespace TestGame3
                 }
             }
 
+            //zoom using mouse
+            zoom = MathHelper.Max(mouseMinZoom, MathHelper.Min(mouseMaxZoom, zoom + (((float)mouseState.ScrollWheelValue - (float)previousMouseState.ScrollWheelValue) / 120.0f) * mouseScrollSensitivity));
+
             applyMaxVerticalRotation();
             //update camera
             calcViewProj();
 
-            previousMouseState = mouseState;
+            //reset mouse if game has focus
+            if (Game.IsActive) Mouse.SetPosition(Game.GraphicsDevice.Viewport.Width / 2, Game.GraphicsDevice.Viewport.Height / 2);
+            previousMouseState = Mouse.GetState();
             base.Update(gameTime);
         }
 
