@@ -33,6 +33,10 @@ namespace TestGame3
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            graphics.PreferMultiSampling = true;
+            //for performance testing
+            //graphics.SynchronizeWithVerticalRetrace = false;
+            //this.IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
         }
