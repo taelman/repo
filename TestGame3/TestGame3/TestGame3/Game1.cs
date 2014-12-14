@@ -23,14 +23,11 @@ namespace TestGame3
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Model model;
         CameraComponent camera;
 
 
         protected VertexBuffer vertexBuffer;
-        protected BasicEffect chunkEffect;
-
-        bool updateChunk;
+        protected IndexBuffer indexBuffer;
 
         public Game1()
         {
@@ -50,13 +47,7 @@ namespace TestGame3
         {
             fpsFont = Content.Load<SpriteFont>("font1");
 
-            model = Content.Load<Model>("cube");
-
-            (model.Meshes[0].Effects[0] as BasicEffect).EnableDefaultLighting();
-
             Components.Add(camera = new CameraComponent(this));//register camera as gamecomponent
-
-            updateChunk = true;
 
             base.Initialize();
         }
@@ -98,6 +89,9 @@ namespace TestGame3
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+
+            int primitiveCount = 0;
+
             //calculate framerate
             elapseTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
             frameCounter++;
@@ -110,70 +104,86 @@ namespace TestGame3
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
             graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
-            int count = 0;
+            BasicEffect effect = new BasicEffect(GraphicsDevice);
+            effect.World = Matrix.Identity;
+            effect.View = camera.View;
+            effect.Projection = camera.Proj;
+            effect.VertexColorEnabled = true;
 
-            /*Vector3 pos = new Vector3(0, 0, 0);
-            if (updateChunk)
+            if (vertexBuffer == null)
             {
-                chunkEffect = new BasicEffect(GraphicsDevice);
-                chunkEffect.EnableDefaultLighting();
-                chunkEffect.World = Matrix.CreateTranslation(pos);
-                chunkEffect.View = camera.View;
-                chunkEffect.Projection = camera.Proj;
-                chunkEffect.VertexColorEnabled = true;
-
-                VertexPositionColor[] vertexData = new VertexPositionColor[8000000];
-
-                int vertexOffset = 0;
-
-                model.Meshes[0].MeshParts[0].VertexBuffer.;
-
-                vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), )
-            }*/
-
-            for (float x = -100; x <= 100; x += 2.1f)
-            {
-                for (float z = -100; z <= 100; z += 2.1f)
+                VertexPositionColor[] vertexData = new VertexPositionColor[1500000];
+                int[] indexData = new int[1500000];
+                int vertexCount = 0;
+                for (float x = -250; x < 250; x += 1)
                 {
-                    Vector3 pos = new Vector3(x, 0, z);
-
-                    BoundingFrustum boundingFrustum = new BoundingFrustum(camera.View * camera.Proj);
-
-                    // Draw the model. A model can have multiple meshes, so loop.
-                    foreach (ModelMesh mesh in model.Meshes)
+                    for (float z = -250; z < 250; z += 1)
                     {
-                        if (boundingFrustum.Contains(mesh.BoundingSphere.Transform(Matrix.CreateTranslation(pos))) != ContainmentType.Disjoint)
-                        {
-                            // This is where the mesh orientation is set, as well as our camera and
-                            // projection.
-                            foreach (BasicEffect effect in mesh.Effects)
-                            {
-                                effect.EnableDefaultLighting();
-                                effect.World = Matrix.CreateTranslation(pos);
-                                effect.View = camera.View;
-                                effect.Projection = camera.Proj;
-                            }
+                        vertexData[vertexCount] = new VertexPositionColor();
+                        vertexData[vertexCount].Position = new Vector3(x, getHeight(x, z), z);
+                        vertexData[vertexCount].Color = Color.Azure;
+                        vertexData[vertexCount + 1] = new VertexPositionColor();
+                        vertexData[vertexCount + 1].Position = new Vector3(x + 1, getHeight(x + 1, z), z);
+                        vertexData[vertexCount + 1].Color = Color.Aquamarine;
+                        vertexData[vertexCount + 2] = new VertexPositionColor();
+                        vertexData[vertexCount + 2].Position = new Vector3(x, getHeight(x, z + 1), z + 1);
+                        vertexData[vertexCount + 2].Color = Color.Aqua;
 
-                            // Draw the mesh, using the effects set above.
-                            mesh.Draw();
+                        vertexData[vertexCount + 3] = new VertexPositionColor();
+                        vertexData[vertexCount + 3].Position = new Vector3(x + 1, getHeight(x + 1, z + 1), z + 1);
+                        vertexData[vertexCount + 3].Color = Color.Azure;
+                        vertexData[vertexCount + 4] = new VertexPositionColor();
+                        vertexData[vertexCount + 4].Position = new Vector3(x, getHeight(x, z + 1), z + 1);
+                        vertexData[vertexCount + 4].Color = Color.Aqua;
+                        vertexData[vertexCount + 5] = new VertexPositionColor();
+                        vertexData[vertexCount + 5].Position = new Vector3(x + 1, getHeight(x + 1, z), z);
+                        vertexData[vertexCount + 5].Color = Color.Aquamarine;
 
-                            foreach(ModelMeshPart meshPart in mesh.MeshParts)
-                            {
-                                count += meshPart.PrimitiveCount;
-                            }
-                        }
+                        indexData[vertexCount] = vertexCount;
+                        indexData[vertexCount + 1] = vertexCount + 1;
+                        indexData[vertexCount + 2] = vertexCount + 2;
+                        indexData[vertexCount + 3] = vertexCount + 3;
+                        indexData[vertexCount + 4] = vertexCount + 4;
+                        indexData[vertexCount + 5] = vertexCount + 5;
+
+                        vertexCount += 6;
+                        primitiveCount += 2;
                     }
                 }
+
+                vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), vertexCount, BufferUsage.None);
+                vertexBuffer.SetData<VertexPositionColor>(vertexData);
+                indexBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, vertexCount, BufferUsage.None);
+                indexBuffer.SetData<int>(indexData);
             }
-            Console.WriteLine(count);
+
+            GraphicsDevice.SetVertexBuffer(vertexBuffer);
+            GraphicsDevice.Indices = indexBuffer;
+            effect.CurrentTechnique.Passes[0].Apply();
+            primitiveCount = vertexBuffer.VertexCount / 3;
+
+            //GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, vertexData, 0, primitiveCount);
+            GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexBuffer.VertexCount, 0, primitiveCount);
+
+            //display primitives
+            spriteBatch.Begin();
+            spriteBatch.DrawString(fpsFont, "Primitives:" + primitiveCount, new Vector2(0, 100), Color.Black);
+            spriteBatch.End();
 
             //display FPS
             spriteBatch.Begin();
-            spriteBatch.DrawString(fpsFont, "FPS:" + FPS, Vector2.Zero, Color.White);
+            spriteBatch.DrawString(fpsFont, "FPS:" + FPS, Vector2.Zero, Color.Black);
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+        public float getHeight(float x, float z)
+        {
+            return -1.0f;
+        }
+
     }
 }

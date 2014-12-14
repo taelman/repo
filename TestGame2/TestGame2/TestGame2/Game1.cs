@@ -53,13 +53,13 @@ namespace TestGame2
 
             userPrimitives = new VertexPositionColor[4];
             userPrimitives[0] = new VertexPositionColor();
-            userPrimitives[0].Position = new Vector3(0, 0, 0);
+            userPrimitives[0].Position = new Vector3(0, -1, 0);
             userPrimitives[0].Color = Color.Red;
             userPrimitives[1] = new VertexPositionColor();
-            userPrimitives[1].Position = new Vector3(1, 1, 0);
+            userPrimitives[1].Position = new Vector3(1, -1, 0);
             userPrimitives[1].Color = Color.Green;
             userPrimitives[2] = new VertexPositionColor();
-            userPrimitives[2].Position = new Vector3(1, 0, 0);
+            userPrimitives[2].Position = new Vector3(0, -1, 1);
             userPrimitives[2].Color = Color.Blue;
             basicEffect = new BasicEffect(GraphicsDevice);
             basicEffect.World = Matrix.Identity;

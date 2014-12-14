@@ -66,8 +66,8 @@ namespace TestGame3
         public override void Initialize()
         {
             //startingconditions camera
-            cameraPosition = new Vector3(0, 2, -16);
-            cameraDirection = new Vector3(0, 0, 1);//start by staring to the origin on -16 on the Z axis
+            cameraPosition = new Vector3(0, 5, 0);
+            cameraDirection = new Vector3(0, 0, 1);//start staring direction
             up = Vector3.Up;//up is up
             rotX = 0;//zero horizontal startrotation
             rotY = 0;//zero vertical startrotation
